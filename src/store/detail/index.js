@@ -17,7 +17,23 @@ const actions = {
         }
     }
 }
-const getters = {}
+
+const getters = {
+    // 路径导航简化的数据
+    categoryView(state){
+        return state.goodInfo.categoryView||{}
+    },
+    // 简化产品信息的数据
+    skuInfo(state){
+        return state.goodInfo.skuInfo||{}
+    },
+    // 产品售卖属性的简化
+    spuSaleAttrList(state){
+        return state.goodInfo.spuSaleAttrList||[]
+    }
+    
+}
+
 export default {
     state,
     mutations,
