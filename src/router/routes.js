@@ -4,6 +4,8 @@ import Search from "@/pages/Search"
 import Register from "@/pages/Register"
 import Login from "@/pages/Login"
 import Detail from "@/pages/Detail"
+import ShopCart from "@/pages/ShopCart"
+import AddCartSuccess from '@/pages/AddCartSuccess'
 // 路由配置信息
 export default [
     {
@@ -36,6 +38,18 @@ export default [
         component:Detail,
         meta:{show:true}
         
+    },
+    {
+        name:'addcartsuccess',
+        path:"/addcartsuccess",
+        component:AddCartSuccess,
+        meta:{show:true} 
+    },
+    {
+        name:'shopcart',
+        path:"/shopcart",
+        component:ShopCart,
+        meta:{show:true} 
     },
     // 重定向
     {
