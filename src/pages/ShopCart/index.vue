@@ -23,7 +23,7 @@
             <span class="price">{{ cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a href="javascript:void(0)" class="mins" @click="handler('minus', -1, cart)">-</a>
             <input
               autocomplete="off"
               type="text"
@@ -31,8 +31,9 @@
               minnum="1"
               class="itxt"
               :value="cart.skuNum"
+              @change="handler('change', $event.target.value, cart)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a href="javascript:void(0)" class="plus" @click="handler('add', 1, cart)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
@@ -47,7 +48,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" />
+        <input class="chooseAll" type="checkbox" :checked="isAllCheck" />
         <span>全选</span>
       </div>
       <div class="option">
@@ -74,6 +75,8 @@
 
 <script>
 import { mapGetters } from "vuex"
+import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
 export default {
   name: 'ShopCart',
   mounted() {
@@ -83,7 +86,45 @@ export default {
   methods: {
     getData() {
       this.$store.dispatch('getCartList')
+    },
+    async handler(type, disNum, cart) {
+      // type:区分三个元素
+      // disNum形参 变化量+1 变化量-1 input最终的个数（不是变化量）
+      // cart 哪一个产品 （找id）
+      // 向服务器发请求修改数量
+      throttle(function () {
+        switch (type) {
+          // 加号
+          case 'add':
+            // 带给服务器变化量
+            disNum = 1
+            break;
+          case 'minus':
+            disNum = cart.skuNum > 1 ? -1 : 0
+            break;
+          case 'change':
+            if (isNaN(disNum) || disNum < 1) {
+              disNum = 0
+            } else {
+              parseInt(disNum) - cart.skuNum
+            }
+        }
+      }, 30)
+      try {
+          // 修改成功
+          await this.$store.dispatch("addOrUpdateShopCart", {
+            skuId: cart.skuId,
+            skuNum: disNum,
+          });
+          //  再一次获取服务器最新的数据进行展示
+          debounce(function () {
+            this.getData()
+          }, 50)
+        } catch (error) {
+          alert('error')
+        }
     }
+
   },
   computed: {
     ...mapGetters(['cartList']),
@@ -98,6 +139,10 @@ export default {
         sum += item.skuNum * item.skuPrice
       })
       return sum
+    },
+    // 判断底部复选框是否勾选
+    isAllCheck() {
+      return this.cateInfoList.every(item => item.isChecked == 1)
     }
   }
 }
