@@ -13,7 +13,12 @@
       <div class="cart-body">
         <ul v-for="(cart, index) in cartInfoList" :key="cart.id" class="cart-list">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" :checked="cart.isChecked == 1" />
+            <input
+              type="checkbox"
+              name="chk_list"
+              @change="updateChecked(cart, $event)"
+              :checked="cart.isChecked == 1"
+            />
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl" />
@@ -39,7 +44,7 @@
             <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a @click="deleteCartById(cart)" class="sindelet">删除</a>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -48,11 +53,16 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllCheck" />
+        <input
+          class="chooseAll"
+          type="checkbox"
+          :checked="isAllCheck && cartInfoList.length > 0"
+          @change="updateAllCartChecked"
+        />
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteAllCheckedCart">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -87,12 +97,12 @@ export default {
     getData() {
       this.$store.dispatch('getCartList')
     },
-    async handler(type, disNum, cart) {
-      // type:区分三个元素
-      // disNum形参 变化量+1 变化量-1 input最终的个数（不是变化量）
-      // cart 哪一个产品 （找id）
-      // 向服务器发请求修改数量
-      throttle(function () {
+    handler: throttle(
+      async function (type, disNum, cart) {
+        // type:区分三个元素
+        // disNum形参 变化量+1 变化量-1 input最终的个数（不是变化量）
+        // cart 哪一个产品 （找id）
+        // 向服务器发请求修改数量
         switch (type) {
           // 加号
           case 'add':
@@ -109,22 +119,63 @@ export default {
               parseInt(disNum) - cart.skuNum
             }
         }
-      }, 30)
-      try {
+        try {
           // 修改成功
           await this.$store.dispatch("addOrUpdateShopCart", {
             skuId: cart.skuId,
             skuNum: disNum,
           });
           //  再一次获取服务器最新的数据进行展示
-          debounce(function () {
-            this.getData()
-          }, 50)
+          this.getData()
         } catch (error) {
           alert('error')
         }
-    }
-
+      }, 500),
+    deleteCartById: throttle(
+      async function (cart) {
+        try {
+          // 如果删除成功 再次发请求获取新的数据进行展示
+          await this.$store.dispatch('deleteCartListBySkuId', cart.skuId)
+          this.getData()
+        } catch (error) {
+          alert(error.message)
+        }
+      }, 50),
+    //  修改某一个产品的勾选状态
+    async updateChecked(cart, event) {
+      // 带给服务器的参数isChecked 不是布尔值 应该是0|1
+      try {
+        let isChecked = event.target.checked ? '1' : '0'
+        // 如果修改数据成功 再次获取服务器数据
+        await this.$store.dispatch('updateCheckedById', { skuId: cart.skuId, isChecked })
+        this.getData()
+      } catch (error) {
+        // 如果失败了，提示
+        alert(error.message)
+      }
+    },
+    // 删除全部选中的商品
+    // 这个回调函数 没办法升级有用的数据 
+    async deleteAllCheckedCart() {
+      try {
+        // 派发一个action
+        await this.$store.dispatch("deleteAllCheckedCart")
+        this.getData()
+      } catch (error) {
+        alert(error.message)
+      }
+    },
+    // 修改全部产品选中的状态
+    async updateAllCartChecked(event) {
+      try {
+        let isChecked = event.target.checked ? "1" : "0";
+        //派发action
+        await this.$store.dispatch("updateAllCartIsChecked", isChecked);
+        this.getData();
+      } catch (error) {
+        alert(error.message);
+      }
+    },
   },
   computed: {
     ...mapGetters(['cartList']),

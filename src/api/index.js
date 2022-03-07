@@ -25,4 +25,7 @@ export const reqAddOrUpdateShopCart = (skuId,skuNum)=>requests({url:`/cart/addTo
 export const reqCartList = ()=>requests({url:'/cart/cartList',method:'get'})
 
 // 删除购物车中数据接口
-export const reqDeleteCartById = ()=>requests({url:`/cart/deletCart/${skuId}`,method:'delete'})
+export const reqDeleteCartById = (skuId)=>requests({url:`/cart/deletCart/${skuId}`,method:'delete'})
+
+// 修改商品的选中状态接口
+export const reqUpdateCheckedById = (skuId,isChecked)=>requests({url:`/cart/checkCart/${skuId}/${isChecked}`,method:'get'})
