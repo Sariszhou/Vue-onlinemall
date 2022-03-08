@@ -76,7 +76,7 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <router-link class="sum-btn" to="/trade">结算</router-link>
         </div>
       </div>
     </div>
@@ -193,7 +193,7 @@ export default {
     },
     // 判断底部复选框是否勾选
     isAllCheck() {
-      return this.cateInfoList.every(item => item.isChecked == 1)
+      return this.cartInfoList.every(item => item.isChecked == 1)
     }
   }
 }

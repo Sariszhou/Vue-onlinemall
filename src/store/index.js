@@ -4,6 +4,8 @@ import home from './home'
 import search from './search'
 import detail from './detail'
 import shopcart from './shopcart'
+import user from './user'
+import trade from './trade'
 // 需要使用插件一次
 Vue.use(Vuex);
 // // state是仓库存储数据的地方
@@ -20,6 +22,8 @@ export default new Vuex.Store({
         home,
         search,
         detail,
-        shopcart
+        shopcart,
+        user,
+        trade
     }
 })
