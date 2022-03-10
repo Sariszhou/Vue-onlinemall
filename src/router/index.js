@@ -77,7 +77,7 @@ router.beforeEach(async (to,from,next)=>{
             }
         }
     }else{
-        // 未登录
+        // 未登录 不能去交易相关页面
         next()
     }
 })
