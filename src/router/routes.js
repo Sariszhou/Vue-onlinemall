@@ -7,6 +7,8 @@ import Detail from "@/pages/Detail"
 import ShopCart from "@/pages/ShopCart"
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import Trade from '@/pages/Trade'
+import Pay from '@/pages/Pay'
+import PaySuccess from '@/pages/PaySuccess'
 // 路由配置信息
 export default [
     {
@@ -56,6 +58,18 @@ export default [
         name:'trade',
         path:"/trade",
         component:Trade,
+        meta:{show:true} 
+    },
+    {
+        name:'pay',
+        path:"/pay",
+        component:Pay,
+        meta:{show:true} 
+    },
+    {
+        name:'paysuccess',
+        path:"/paysuccess",
+        component:PaySuccess,
         meta:{show:true} 
     },
     // 重定向

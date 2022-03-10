@@ -69,7 +69,7 @@
       <div class="money-box">
         <div class="chosed">
           已选择
-          <span>0</span>件商品
+          <span>{{selectNum}}</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
@@ -89,6 +89,11 @@ import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 export default {
   name: 'ShopCart',
+  data(){
+    return{
+      
+    }
+  },
   mounted() {
     // 获取个人购物车的数据
     this.getData()
@@ -116,8 +121,9 @@ export default {
             if (isNaN(disNum) || disNum < 1) {
               disNum = 0
             } else {
-              parseInt(disNum) - cart.skuNum
+              disNum = parseInt(disNum) - cart.skuNum
             }
+            break;
         }
         try {
           // 修改成功
@@ -194,6 +200,9 @@ export default {
     // 判断底部复选框是否勾选
     isAllCheck() {
       return this.cartInfoList.every(item => item.isChecked == 1)
+    },
+    selectNum(){  
+     return this.cartInfoList.filter(item=>item.isChecked==1).length
     }
   }
 }
