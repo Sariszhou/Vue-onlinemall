@@ -12,37 +12,37 @@ let originPush = VueRouter.prototype.push;
 let originReplace = VueRouter.prototype.replace;
 // 重写push|replace
 // 第一个参数：告诉原来的push方法 往哪里跳转
-VueRouter.prototype.push = function(location,resolve,reject){
-    if(resolve && reject){
+VueRouter.prototype.push = function (location, resolve, reject) {
+    if (resolve && reject) {
         // call||apply区别
-    // 相同点:二者都可以调用函数一次,都可以篡改函数的this一次
-    // 不同点:call传递参数需要用逗号隔开,apply则传递数组
-    originPush.call(this,location,resolve,reject)
-    }else{
-        originPush.call(this,location,()=>{},()=>{})
+        // 相同点:二者都可以调用函数一次,都可以篡改函数的this一次
+        // 不同点:call传递参数需要用逗号隔开,apply则传递数组
+        originPush.call(this, location, resolve, reject)
+    } else {
+        originPush.call(this, location, () => { }, () => { })
     }
 }
 
-VueRouter.prototype.replace = function(location,resolve,reject){
-    if(resolve && reject){
-    originReplace.call(this,location,resolve,reject)
-    }else{
-        originReplace.call(this,location,()=>{},()=>{})
+VueRouter.prototype.replace = function (location, resolve, reject) {
+    if (resolve && reject) {
+        originReplace.call(this, location, resolve, reject)
+    } else {
+        originReplace.call(this, location, () => { }, () => { })
     }
 }
 // 配置路由
-let router =  new VueRouter({
+let router = new VueRouter({
     // 配置路由 key value 一致 省略v
     routes,
     // 滚动行为
-    scrollBehavior (to, from, savedPosition) {
+    scrollBehavior(to, from, savedPosition) {
         // 返回的y等于0 代表滚动条在最顶部
-        return {y:0}
+        return { y: 0 }
     }
 })
 
 // 全局守卫：前置守卫（在路由跳转之间进行判断）
-router.beforeEach(async (to,from,next)=>{
+router.beforeEach(async (to, from, next) => {
     // to:可以获取到你要跳转到哪个路由信息
     // from:可以获取到从哪个路由而来的信息
     // next:放行函数  
@@ -53,16 +53,16 @@ router.beforeEach(async (to,from,next)=>{
     // 用户信息
     let name = store.state.user.userInfo.name
     // 用户已经登陆了
-    if(token){
+    if (token) {
         // 用户已经登陆了 不需要再去login[不能去，停留在首页]
-        if(to.path=='/login'){
+        if (to.path == '/login') {
             next('/')
-        }else{
+        } else {
             //登录了但去的不是login
             // 如果已经有用户名 不需要再派发 直接放行
-            if(name){
+            if (name) {
                 next()
-            }else{
+            } else {
                 // 没有用户信息 派发action 让仓库存储用户信息在跳转
                 try {
                     // 获取用户信息成功
@@ -76,9 +76,19 @@ router.beforeEach(async (to,from,next)=>{
                 }
             }
         }
-    }else{
-        // 未登录 不能去交易相关页面
-        next()
+    } else {
+        // 未登录 不能去交易相关页面、不能去支付相关【pay/paysuccess】、不能去个人中心
+        // 应该跳转到登录页面
+        // 去的不是上面这些路由 放行
+        let toPath = to.path
+        if (toPath.indexOf('/trade') != -1 || toPath.indexOf('/pay') != -1 || toPath.indexOf('/center') != -1) {
+            // 如果去的不是上面这些路由（home、search、shopCart）放行
+            // 把未登录前想去的页面 保存在query参数中
+            next('/login?redirect=' + toPath)
+        } else {
+            //去的不是上面这些路由（home|search|shopCart）---放行
+            next();
+        }
     }
 })
 

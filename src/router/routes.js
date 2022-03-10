@@ -62,7 +62,15 @@ export default [
         name:'trade',
         path:"/trade",
         component:Trade,
-        meta:{show:true} 
+        meta:{show:true},
+        // 路由独享守卫
+        beforeEnter:(to,from,next)=>{
+            if(from.path='/shopcart'){
+                next()
+            }else{
+                next(false)
+            }
+        }
     },
     {
         name:'pay',
