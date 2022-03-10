@@ -9,6 +9,7 @@ import AddCartSuccess from '@/pages/AddCartSuccess'
 import Trade from '@/pages/Trade'
 import Pay from '@/pages/Pay'
 import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
 // 路由配置信息
 export default [
     {
@@ -71,6 +72,12 @@ export default [
         path:"/paysuccess",
         component:PaySuccess,
         meta:{show:true} 
+    },
+    {
+        name:'center',
+        path:'/center',
+        component:Center,
+        meta:{show:false}
     },
     // 重定向
     {
