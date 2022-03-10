@@ -76,7 +76,14 @@ export default [
         name:'pay',
         path:"/pay",
         component:Pay,
-        meta:{show:true} 
+        meta:{show:true},
+        beforeEnter:(to,from,next)=>{
+            if(from.path='/trade'){
+                next()
+            }else{
+                next(false)
+            }
+        }
     },
     {
         name:'paysuccess',
