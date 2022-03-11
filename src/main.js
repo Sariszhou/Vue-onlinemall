@@ -44,6 +44,9 @@ import 'swiper/css/swiper.css'
 // 测试axios接口
 // reqCategoryList()
 // console.log(reqGetSearchInfo({}))
+
+// 引入表单校验插件
+import '@/plugins/validate'
 new Vue({
   render: h => h(App),
   // 配置全局事件总线
