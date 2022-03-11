@@ -27,7 +27,7 @@ const actions = {
         //不需要在三连环（仓库存储数据了）
         //注意:async函数执行返回的结果一定是一个promise【要么成功，要么失败】
         let result = await reqAddOrUpdateShopCart(skuId, skuNum);
-        if (result.code == 201) {
+        if (result.code == 200) {
             //返回的是成功的标记
             return "ok";
         } else {
