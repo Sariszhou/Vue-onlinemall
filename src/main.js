@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import App from './App.vue'
+
 // 引入路由
 import router from '@/router'
 Vue.config.productionTip = false
+
 // 三级联动组件 --注册为全局组件
 import TypeNav from '@/components/TypeNav'
 import Carousel from '@/components/Carousel'
 import Pagination from '@/components/Pagination'
+
 // 三级联动接口请求
 // import {reqCategoryList} from '@/api'
 // import { reqGetSearchInfo } from './api'
@@ -16,6 +19,16 @@ import store from './store'
 // 统一接口api文件夹里面全部请求函数
 import * as API from '@/api'
 import {Button,MessageBox} from 'element-ui'
+
+// 引入懒加载插件 
+import VueLazyload from 'vue-lazyload'
+import defaultGif from '@/assets/lazyload.gif'
+// 注册插件
+Vue.use(VueLazyload,{
+  // 懒加载默认图片
+  loading:defaultGif
+})
+
 // 第一个参数:全局组件的名字 第二个参数:哪一个组件
 Vue.component(TypeNav.name,TypeNav)
 Vue.component(Carousel.name,Carousel)
