@@ -1,4 +1,5 @@
 module.exports = {
+  productionSourceMap:false,
     // 关闭eslint
     lintOnSave:false,
     // 配置代理 解决跨域
