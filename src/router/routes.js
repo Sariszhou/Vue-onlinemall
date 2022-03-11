@@ -80,7 +80,7 @@ export default [
         component:()=>import('@/pages/Pay'),
         meta:{show:true},
         beforeEnter:(to,from,next)=>{
-            if(from.path='/trade'){
+            if(from.path=='/trade'){
                 next()
             }else{
                 next(false)
